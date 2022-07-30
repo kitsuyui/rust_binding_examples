@@ -16,7 +16,24 @@ pub fn my_calc(a: i64, b: i64, c: i64) -> String {
 my_calc(1, 2, 3)  // => "9"
 ```
 
-## Build python package
+## Python package
+
+See also [/python/README.md](/python/README.md)
+
+### Install
+
+Warning: Currently this package is only distributed on TestPyPI.
+
+```sh
+pip install -i https://test.pypi.org/simple/ amazing-calc
+```
+
+```python
+from amazing_calc import my_calc
+my_calc(1, 2, 3)  # => '9'
+```
+
+### Build
 
 ```sh
 cd python
