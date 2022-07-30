@@ -25,10 +25,26 @@ jobs:
           pipx install pipenv
           pipenv sync --dev
 
-      - name: packaging
+      - name: packaging linux
+        if: matrix.os == 'ubuntu-latest'
         run: |
           cd python
           pipenv run build --release --strip --interpreter python${{ matrix.python }}
+
+      - name: packaging windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd python
+          pipenv run build --release --strip --interpreter python${{ matrix.python }}
+
+      - name: packaging darwin
+        if: matrix.os == 'macos-latest'
+        run: |
+          rustup target add x86_64-apple-darwin
+          rustup target add aarch64-apple-darwin
+          cd python
+          pipenv run build --release --strip --interpreter python${{ matrix.python }} --target x86_64-apple-darwin
+          pipenv run build --release --strip --interpreter python${{ matrix.python }} --target aarch64-apple-darwin
 
       - uses: actions/upload-artifact@v2
         with:
