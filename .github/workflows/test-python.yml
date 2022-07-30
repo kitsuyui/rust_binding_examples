@@ -2,7 +2,7 @@ name: Test build Python packages
 
 on: [push]
 jobs:
-  test:
+  test_and_build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -29,6 +29,20 @@ jobs:
         run: |
           cd python
           pipenv run build --release --strip --interpreter python${{ matrix.python }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build_wheels
+          path: target/wheels/
+
+  publish:
+    needs: test_and_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build_wheels
+          path: target/wheels/
 
       - name: Publish distribution to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
