@@ -23,7 +23,8 @@ jobs:
             ~/.cargo/git/db/
             ~/.local/share/virtualenvs
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+            !target/wheels
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-pipenv-${{ matrix.python }}-${{ hashFiles('Pipfile.lock') }}
 
       - uses: actions/setup-python@v4
         with:
