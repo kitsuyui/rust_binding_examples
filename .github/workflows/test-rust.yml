@@ -17,3 +17,19 @@ jobs:
 
     - name: build
       run: cargo build --verbose
+
+    - name: coverage
+      run: |
+        rustup component add llvm-tools-preview
+        cargo install cargo-llvm-cov
+        cargo llvm-cov --lcov --output-path coverage.lcov
+
+    - name: Upload coverage report to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.lcov
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        verbose: true
