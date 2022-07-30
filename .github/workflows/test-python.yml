@@ -62,7 +62,7 @@ jobs:
 
       - name: Publish distribution to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
-        # if: github.event_name == 'release' && github.event.release.prerelease
+        if: github.event_name == 'release' && github.event.release.prerelease
         with:
           packages_dir: target/wheels/
           user: __token__
