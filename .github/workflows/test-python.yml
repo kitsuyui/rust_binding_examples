@@ -1,0 +1,83 @@
+name: Test build Python packages
+
+on: [push]
+jobs:
+  test_and_build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.7", "3.8", "3.9", "3.10"]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        # TODO: arch is not supported yet (arm64, i386, x86_64, ...)
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "${{ matrix.python }}"
+          cache: "pipenv"
+
+      - name: Install build dependencies
+        run: |
+          cd python
+          pipx install pipenv
+          pipenv sync --dev
+
+      - name: packaging linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd python
+          pipenv run build --release --strip --interpreter python${{ matrix.python }}
+
+      - name: packaging windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd python
+          pipenv run build --release --strip --interpreter python${{ matrix.python }}
+
+      - name: packaging darwin
+        if: matrix.os == 'macos-latest'
+        run: |
+          rustup target add x86_64-apple-darwin
+          rustup target add aarch64-apple-darwin
+          cd python
+          pipenv run build --release --strip --interpreter python${{ matrix.python }} --target x86_64-apple-darwin
+          pipenv run build --release --strip --interpreter python${{ matrix.python }} --target aarch64-apple-darwin
+
+      - name: test install
+        run: |
+          cd python
+          ./test_install.sh
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build_wheels
+          path: target/wheels/
+
+  publish:
+    needs: test_and_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build_wheels
+          path: target/wheels/
+
+      - name: Publish distribution to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        if: github.event_name == 'release' && github.event.release.prerelease
+        with:
+          packages_dir: target/wheels/
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish distribution to PyPI
+        if: github.event_name == 'release' && !github.event.release.prerelease
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          packages_dir: target/wheels/
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
