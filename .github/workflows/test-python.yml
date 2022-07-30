@@ -46,6 +46,11 @@ jobs:
           pipenv run build --release --strip --interpreter python${{ matrix.python }} --target x86_64-apple-darwin
           pipenv run build --release --strip --interpreter python${{ matrix.python }} --target aarch64-apple-darwin
 
+      - name: test install
+        run: |
+          cd python
+          ./test_install.sh
+
       - uses: actions/upload-artifact@v2
         with:
           name: build_wheels
