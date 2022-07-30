@@ -11,6 +11,9 @@ crate-type = ["cdylib"]
 pyo3 = { version = "0.16.5", features = ["extension-module"] }
 amazing_calc = { path = "../amazing_calc" }
 
+[dev-dependencies]
+coverage-helper = "0.1.0"
+
 [package.metadata.maturin]
 
 python-source = "pysrc"

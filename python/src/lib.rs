@@ -1,3 +1,4 @@
+#![cfg_attr(coverage_nightly, feature(no_coverage))]
 use pyo3::prelude::*;
 
 
@@ -7,6 +8,7 @@ fn my_calc(a: i64, b: i64, c: i64) -> PyResult<String> {
 }
 
 
+#[cfg_attr(coverage_nightly, no_coverage)]
 #[pymodule]
 fn amazing_calc(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(my_calc, m)?)?;
