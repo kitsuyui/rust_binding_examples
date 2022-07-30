@@ -32,9 +32,9 @@ jobs:
     - name: coverage
       run: |
         rustup component add llvm-tools-preview
-        cargo install cargo-llvm-cov
+        cargo install cargo-llvm-cov || true  # when already cached
         cargo llvm-cov --lcov --output-path coverage.lcov
-      
+
     - uses: actions/setup-python@v4
       with:
         python-version: 3.x
