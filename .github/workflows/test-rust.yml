@@ -23,12 +23,30 @@ jobs:
         rustup component add llvm-tools-preview
         cargo install cargo-llvm-cov
         cargo llvm-cov --lcov --output-path coverage.lcov
+      
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.x
+        cache: "pipenv"
+
+    - name: python-coverage
+      run: |
+        cd python
+        pipx install pipenv
+        source <(cargo llvm-cov show-env --export-prefix)
+        export CARGO_TARGET_DIR=$CARGO_LLVM_COV_TARGET_DIR
+        export CARGO_INCREMENTAL=1
+        cargo test
+        pipenv sync --dev
+        pipenv run maturin develop
+        pipenv run pytest tests --cov=pysrc --cov-report xml
+        cargo llvm-cov --no-run --lcov --output-path coverage.lcov
 
     - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.lcov
+        files: ./coverage.lcov,./python/coverage.xml,./python/coverage.lcov
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: true

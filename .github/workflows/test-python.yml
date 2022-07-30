@@ -25,6 +25,12 @@ jobs:
           pipx install pipenv
           pipenv sync --dev
 
+      - name: development build
+        run: |
+          cd python
+          pipenv run maturin develop
+          pipenv run pytest tests
+
       - name: packaging linux
         if: matrix.os == 'ubuntu-latest'
         run: |
