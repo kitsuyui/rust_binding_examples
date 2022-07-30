@@ -14,3 +14,10 @@ However it works as same as following python code:
 def my_calc(a: int, b: int, c: int) -> str:
     return str((a + b) * c)
 ```
+
+# LICENSE
+
+The 3-Clause BSD License. See also LICENSE file.
+
+- [PyO3](https://github.com/PyO3/pyo3) is licensed under the Apache-2.0 license.
+- [Python](https://github.com/python/cpython) is licensed under the Python License.
