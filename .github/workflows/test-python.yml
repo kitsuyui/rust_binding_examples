@@ -14,6 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.local/share/virtualenvs
+            target/
+            !target/wheels
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-pipenv-${{ matrix.python }}-${{ hashFiles('Pipfile.lock') }}
+
       - uses: actions/setup-python@v4
         with:
           python-version: "${{ matrix.python }}"
@@ -24,6 +36,12 @@ jobs:
           cd python
           pipx install pipenv
           pipenv sync --dev
+
+      - name: development build
+        run: |
+          cd python
+          pipenv run maturin develop
+          pipenv run pytest tests
 
       - name: packaging linux
         if: matrix.os == 'ubuntu-latest'
