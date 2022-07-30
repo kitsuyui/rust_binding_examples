@@ -1,23 +1,14 @@
-use amazing_calc::my_calc;
-use cpython::{py_fn, py_module_initializer, PyResult, Python};
+use pyo3::prelude::*;
 
-extern crate amazing_calc;
 
-py_module_initializer!(amazing_calc, |py, m| {
-    m.add(py, "__doc__", "This module is implemented in Rust.")?;
+#[pyfunction]
+fn my_calc(a: i64, b: i64, c: i64) -> PyResult<String> {
+    Ok(amazing_calc::my_calc(a, b, c).to_string())
+}
 
-    // This is a workaround for the clippy warning:
-    // Currently py_fn! macro does manual_strip internally.
-    #[allow(clippy::manual_strip)]
-    m.add(
-        py,
-        "my_calc",
-        py_fn!(py, my_calc_py(a: i64, b: i64, c: i64)),
-    )?;
+
+#[pymodule]
+fn amazing_calc(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(my_calc, m)?)?;
     Ok(())
-});
-
-fn my_calc_py(_: Python, a: i64, b: i64, c: i64) -> PyResult<String> {
-    let out: String = my_calc(a, b, c);
-    Ok(out)
 }

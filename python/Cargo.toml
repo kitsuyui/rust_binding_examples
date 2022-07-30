@@ -1,6 +1,6 @@
 [package]
 name = "python"
-version = "0.1.12"
+version = "0.1.14"
 edition = "2021"
 
 [lib]
@@ -8,7 +8,7 @@ name = "amazing_calc"
 crate-type = ["cdylib"]
 
 [dependencies]
-cpython = "0.7"
+pyo3 = { version = "0.16.5", features = ["extension-module"] }
 amazing_calc = { path = "../amazing_calc" }
 
 [package.metadata.maturin]
