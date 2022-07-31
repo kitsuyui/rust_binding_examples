@@ -3,4 +3,5 @@
 members = [
     "amazing_calc",
     "python",
+    "node",
 ]
