@@ -8,7 +8,7 @@ name = "amazing_calc"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.17.1", features = ["extension-module"] }
+pyo3 = { version = "0.17.2", features = ["extension-module"] }
 amazing_calc = { path = "../amazing_calc" }
 
 [dev-dependencies]
