@@ -1,3 +1,5 @@
+Migrate to https://github.com/kitsuyui/rust-playground
+
 # rust_binding_examples
 
 [![codecov](https://codecov.io/gh/kitsuyui/rust_binding_examples/branch/main/graph/badge.svg?token=MVD7SO576O)](https://codecov.io/gh/kitsuyui/rust_binding_examples)
